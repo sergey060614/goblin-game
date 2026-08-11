@@ -1,12 +1,15 @@
 {
   "name": "goblin-game",
   "version": "1.0.0",
+  "homepage": "https://sergey060614.github.io/goblin-game",
   "main": "dist/index.js",
   "license": "MIT",
   "scripts": {
-    "build": "webpack --mode production",
-    "dev": "webpack serve --open --mode development"
-  },
+  "build": "webpack --mode production",
+  "dev": "webpack serve --open --mode development",
+  "predeploy": "npm run build",
+  "deploy": "cross-env NODE_ENV=production webpack"
+},
   "devDependencies": {
     "clean-webpack-plugin": "^3.0.0",
     "css-loader": "^6.8.1",
