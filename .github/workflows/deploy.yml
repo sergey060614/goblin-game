@@ -20,9 +20,10 @@ jobs:
 
       - name: Install dependencies
         run: yarn install --frozen-lockfile
-
       - name: Build project
         run: yarn build
+        env:
+          PUBLIC_URL: /goblin-game/
 
       - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v3
