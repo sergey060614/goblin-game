@@ -2,16 +2,18 @@ const path = require("path");
 const HtmlWebpackPlugin = require("html-webpack-plugin");
 const { CleanWebpackPlugin } = require("clean-webpack-plugin");
 
-const PUBLIC_PATH = "/goblin-game/";
+// Проверяем, запущена ли команда сборки на продакшн (yarn build) или локальный сервер (yarn dev)
+const isProduction = process.env.NODE_ENV === "production";
+// Локально используем "/", для GitHub Pages используем "/goblin-game/"
+const PUBLIC_PATH = isProduction ? "/goblin-game/" : "/";
 
 module.exports = {
-  mode: "development",
+  mode: isProduction ? "production" : "development",
   entry: "./src/index.js",
   output: {
     filename: "bundle.[contenthash].js",
     path: path.resolve(__dirname, "dist"),
     assetModuleFilename: "assets/[hash][ext][query]",
-
     publicPath: PUBLIC_PATH
   },
   devServer: {
@@ -19,7 +21,11 @@ module.exports = {
     port: 8080,
     open: true,
     hot: true,
-    historyApiFallback: true
+    historyApiFallback: true,
+    // Принудительно открываем корень, чтобы dev-server не путался в путях
+    devMiddleware: {
+      publicPath: "/"
+    }
   },
   module: {
     rules: [
@@ -28,8 +34,8 @@ module.exports = {
         use: ["style-loader", "css-loader"]
       },
       {
-        test: /\.(png|jpg|jpeg|gif|svg)$/i,
-        type: "asset/resource"
+        test: /\.(png|svg|jpg|jpeg|gif|cur)$/i, 
+        type: 'asset/resource', // ✅ Формат .cur теперь будет отлично обрабатываться!
       }
     ]
   },
@@ -37,7 +43,7 @@ module.exports = {
     new CleanWebpackPlugin(),
     new HtmlWebpackPlugin({
       template: "./src/index.html",
-
+      // Динамический базовый URL для тегов внутри HTML
       base: PUBLIC_PATH
     })
   ]

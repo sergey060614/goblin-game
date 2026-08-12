@@ -1,11 +1,20 @@
-import "./styles/main.css";
 import Game from "./js/Game.js";
+import './styles/main.css';
 
-document.addEventListener("DOMContentLoaded", () => {
-  const gameContainer = document.querySelector(".game-container");
-  const boardElement = document.querySelector(".board");
-  const scoreElement = document.getElementById("score");
-  const messageElement = document.getElementById("message");
+const container = document.querySelector(".game-container");
+const boardEl = document.querySelector(".board");
+const scoreEl = document.querySelector("#score"); 
+const messageEl = document.querySelector("#message"); 
 
-  new Game(gameContainer, boardElement, scoreElement, messageElement).init();
-});
+const game = new Game(container, boardEl, scoreEl, messageEl);
+game.start();
+const customCursor = document.querySelector("#custom-cursor");
+
+if (customCursor) {
+  customCursor.style.display = "block"; // Показываем кастомный молоток
+  
+  window.addEventListener("mousemove", (e) => {
+    customCursor.style.left = `${e.clientX}px`;
+    customCursor.style.top = `${e.clientY}px`;
+  });
+}

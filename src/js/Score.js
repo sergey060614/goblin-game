@@ -1,20 +1,35 @@
 export default class Score {
   constructor(element) {
-    this.element = element;
-    this.count = 0;
+    this.element = element; 
+    
+    this.hitsElement = document.querySelector("#hits");
+    this.missesElement = document.querySelector("#misses");
+    
+    this.hits = 0;
+    this.misses = 0;
   }
 
-  increment() {
-    this.count++;
+  update(hits, misses) {
+    this.hits = hits;
+    this.misses = misses;
     this.render();
   }
 
   reset() {
-    this.count = 0;
+    this.hits = 0;
+    this.misses = 0;
+    if (this.element) {
+      this.element.textContent = ""; 
+    }
     this.render();
   }
 
   render() {
-    this.element.textContent = `Счёт: ${this.count}`;
+    if (this.hitsElement) {
+      this.hitsElement.textContent = `Попаданий: ${this.hits}`;
+    }
+    if (this.missesElement) {
+      this.missesElement.textContent = `Промахов: ${this.misses}`;
+    }
   }
 }

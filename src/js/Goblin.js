@@ -1,19 +1,24 @@
+import goblinImg from "../assets/goblin.png";
+
 export default class Goblin {
   constructor(intervalTime = 1000) {
     this.intervalTime = intervalTime;
     this.currentCell = null;
     this.timerId = null;
     this.onMissCallback = null;
+
+    this.element = document.createElement("img");
+
+    this.element.src = goblinImg;
+
+    this.element.classList.add("goblin-image");
   }
 
-  appear(cells) {
-    if (this.currentCell) {
-      this.currentCell.classList.remove("goblin");
-    }
+  appear(targetCell) {
+    this.clear();
 
-    const randomIndex = Math.floor(Math.random() * cells.length);
-    this.currentCell = cells[randomIndex];
-    this.currentCell.classList.add("goblin");
+    this.currentCell = targetCell;
+    this.currentCell.append(this.element);
 
     this.timerId = setTimeout(() => {
       this.miss();
@@ -24,20 +29,28 @@ export default class Goblin {
     this.onMissCallback = callback;
   }
 
-  miss(silent = false) {
+  miss() {
     if (this.currentCell) {
-      this.currentCell.classList.remove("goblin");
+      this.element.remove();
+      this.currentCell = null;
 
-      if (typeof this.onMissCallback === "function" && !silent) {
+      if (typeof this.onMissCallback === "function") {
         this.onMissCallback();
       }
-
-      this.currentCell = null;
     }
-    clearTimeout(this.timerId);
+    this.destroyTimer();
   }
 
-  destroyTimer(silent = false) {
-    clearTimeout(this.timerId);
+  clear() {
+    this.element.remove();
+    this.currentCell = null;
+    this.destroyTimer();
+  }
+
+  destroyTimer() {
+    if (this.timerId) {
+      clearTimeout(this.timerId);
+      this.timerId = null;
+    }
   }
 }

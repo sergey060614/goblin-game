@@ -4,7 +4,11 @@ export default class Board {
     this.size = size;
     this.cells = [];
     this.onCellClickCallback = null;
+
+    this.boundClickHandler = this.handleClick.bind(this);
+
     this.createCells();
+    this.initListeners();
   }
 
   createCells() {
@@ -13,15 +17,20 @@ export default class Board {
       const cell = document.createElement("div");
       cell.classList.add("cell");
 
-      // Привязываем обработчик к каждой ячейке
-      cell.addEventListener("click", () => {
-        if (typeof this.onCellClickCallback === "function") {
-          this.onCellClickCallback(cell);
-        }
-      });
-
-      this.container.appendChild(cell);
+      this.container.append(cell);
       this.cells.push(cell);
+    }
+  }
+
+  initListeners() {
+    this.container.addEventListener("click", this.boundClickHandler);
+  }
+
+  handleClick(event) {
+    const cell = event.target.closest(".cell");
+
+    if (cell && typeof this.onCellClickCallback === "function") {
+      this.onCellClickCallback(cell);
     }
   }
 
@@ -34,10 +43,7 @@ export default class Board {
   }
 
   unsubscribe() {
-    this.cells.forEach((cell) => {
-      cell.replaceWith(cell.cloneNode(true));
-    });
-
-    this.cells = Array.from(this.container.querySelectorAll(".cell"));
+    this.container.removeEventListener("click", this.boundClickHandler);
+    this.onCellClickCallback = null;
   }
 }
